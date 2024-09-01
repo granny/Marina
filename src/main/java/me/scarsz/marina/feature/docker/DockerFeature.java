@@ -145,7 +145,7 @@ public class DockerFeature extends AbstractFeature {
     @Override
     public void onCommandAutoCompleteInteraction(CommandAutoCompleteInteractionEvent event) {
         String[] commandPath = event.getFullCommandName().split(" ");
-        AutoCompleteQuery focusedOption = event.getFocusedOption();
+        String option = event.getFocusedOption().getValue();
 
         if (!"container".equals(commandPath[0])) {
             return; // not under the "container" command
@@ -159,11 +159,11 @@ public class DockerFeature extends AbstractFeature {
             return; // not the "restart" subcommand
         }
 
-        if (!"container".equals(focusedOption)) {
+        if (!"container".equals(option)) {
             return; // not the "container" option
         }
 
-        List<Choice> options = listContainers(focusedOption.getValue(), event.getUser()).stream()
+        List<Choice> options = listContainers(option, event.getUser()).stream()
                 .map(this::getContainerName)
                 .map(word -> new Choice(word, word)) // map the words to choices
                 .collect(Collectors.toList());
