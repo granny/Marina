@@ -16,6 +16,7 @@ import me.scarsz.marina.feature.AbstractFeature;
 import net.dv8tion.jda.api.entities.ISnowflake;
 import net.dv8tion.jda.api.events.interaction.command.CommandAutoCompleteInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.interactions.AutoCompleteQuery;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
@@ -144,7 +145,7 @@ public class DockerFeature extends AbstractFeature {
     @Override
     public void onCommandAutoCompleteInteraction(CommandAutoCompleteInteractionEvent event) {
         String[] commandPath = event.getFullCommandName().split(" ");
-        String option = event.getFocusedOption().getValue();
+        AutoCompleteQuery focusedOption = event.getFocusedOption();
 
         if (!"container".equals(commandPath[0])) {
             return; // not under the "container" command
@@ -158,11 +159,12 @@ public class DockerFeature extends AbstractFeature {
             return; // not the "restart" subcommand
         }
 
-        if (!"container".equals(option)) {
+        if (!"container".equals(focusedOption.getName())) {
             return; // not the "container" option
         }
 
-        List<Choice> options = listContainers(option, event.getUser()).stream()
+        String optionValue = focusedOption.getValue().isBlank() ? null : focusedOption.getValue();
+        List<Choice> options = listContainers(optionValue, event.getUser()).stream()
                 .map(this::getContainerName)
                 .map(word -> new Choice(word, word)) // map the words to choices
                 .collect(Collectors.toList());
