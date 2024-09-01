@@ -151,12 +151,8 @@ public class DockerFeature extends AbstractFeature {
             return; // not under the "container" command
         }
 
-        if (!"update".equals(commandPath[1])) {
-            return; // not the "update" subcommand
-        }
-
-        if (!"restart".equals(commandPath[1])) {
-            return; // not the "restart" subcommand
+        if (!("update".equals(commandPath[1]) || "restart".equals(commandPath[1]))) {
+            return; // not the "update" or "restart" subcommands
         }
 
         if (!"container".equals(focusedOption.getName())) {
