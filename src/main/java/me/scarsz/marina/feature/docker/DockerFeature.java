@@ -163,9 +163,8 @@ public class DockerFeature extends AbstractFeature {
             return; // not the "container" option
         }
 
-        List<Choice> options = listContainers(null, event.getUser()).stream()
+        List<Choice> options = listContainers(focusedOption.getValue(), event.getUser()).stream()
                 .map(this::getContainerName)
-                .filter(word -> word.startsWith(focusedOption.getValue())) // only display words that start with the user's current input
                 .map(word -> new Choice(word, word)) // map the words to choices
                 .collect(Collectors.toList());
         event.replyChoices(options).queue();
